@@ -1,0 +1,23 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [mongo_data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  server:
+    build: ./server
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      MONGO_URI: mongodb://mongo:27017/prepai
+      CORS_ORIGIN: http://localhost:5173
+    ports: ["4000:4000"]
+    depends_on:
+      mongo: { condition: service_healthy }
+volumes:
+  mongo_data:
