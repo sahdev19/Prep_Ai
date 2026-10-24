@@ -13,3 +13,5 @@ export const ERROR_CODES = [
   'RATE_LIMITED', 'QUOTA_EXCEEDED', 'FILE_INVALID', 'AI_UNAVAILABLE', 'AI_INVALID_OUTPUT', 'INTERNAL_ERROR',
 ] as const;
 export type ErrorCode = (typeof ERROR_CODES)[number];
+
+export const idParams = z.object({ id: objectId });

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { createApp } from './app';
 import { env } from './config/env';
+import { startWorker } from './jobs/worker';
 import { logger } from './utils/logger';
 
 async function main() {
@@ -9,8 +10,11 @@ async function main() {
     logger.info(`PrepAI API listening on port ${env.PORT}`),
   );
 
+  const stopWorker = env.WORKER_ENABLED ? startWorker() : () => undefined;
+
   const shutdown = (signal: string) => {
     logger.info(`${signal} received, shutting down`);
+    stopWorker();
     server.close(async () => {
       await mongoose.disconnect();
       process.exit(0);

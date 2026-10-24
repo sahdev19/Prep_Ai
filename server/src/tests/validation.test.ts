@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { registerBody } from '../validation/auth';
-import { createDsaBody, listDsaQuery } from '../validation/dsa';
+import { createDsaBody, listDsaQuery, updateDsaBody } from '../validation/dsa';
 import { ragAnswerOutput, resumeAnalysisOutput } from '../validation/ai';
 import { pagination } from '../validation/common';
 
@@ -13,6 +13,12 @@ describe('request validation', () => {
   it('rejects unknown fields (mass-assignment guard)', () => {
     const r = createDsaBody.safeParse({ title: 'Two Sum', topic: 'arrays', difficulty: 'easy', userId: 'x' });
     expect(r.success).toBe(false);
+  });
+
+  it('partial updates never inject create-time defaults', () => {
+    expect(updateDsaBody.parse({ notes: 'revise' })).toEqual({ notes: 'revise' });
+    expect(updateDsaBody.safeParse({}).success).toBe(false);
+    expect(createDsaBody.parse({ title: 'T', topic: 'dp', difficulty: 'hard' })).toMatchObject({ platform: 'other', status: 'todo' });
   });
 
   it('caps page size to keep result sets bounded', () => {

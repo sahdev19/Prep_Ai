@@ -6,6 +6,7 @@ export default defineConfig({
       NODE_ENV: 'test',
       MONGO_URI: 'mongodb://localhost:27017/prepai-test',
       CORS_ORIGIN: 'http://localhost:5173',
+      JWT_ACCESS_SECRET: 'test-secret-test-secret-test-secret-123',
       LOG_LEVEL: 'silent',
     },
   },
